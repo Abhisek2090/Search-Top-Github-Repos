@@ -1,10 +1,12 @@
 package com.abhisek.mapprr_github;
 
+import java.io.Serializable;
+
 /**
  * Created by bapu on 2/11/2017.
  */
 
-public class RepositoryData {
+public class RepositoryData implements Serializable {
 
     public String repoName;
     public String fullRepoName;

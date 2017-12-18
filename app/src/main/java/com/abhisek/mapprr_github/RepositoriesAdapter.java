@@ -2,6 +2,7 @@ package com.abhisek.mapprr_github;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -65,7 +66,7 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         final MyHolder myHolder= (MyHolder) holder;
         RepositoryData current = filterList.get(position);
         myHolder.textRepoName.setText(current.repoName);
-        myHolder.textRepoId.setText(current.repoId);
+//        myHolder.textrepoFullNameView.setText(current.repoId);
         myHolder.textFullRepoName.setText(current.fullRepoName);
         myHolder.textWatchersTextView.setText(current.repowatchers);
         myHolder.textCommitsCount.setText(current.commitsCount);
@@ -103,7 +104,7 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView textRepoName, textRepoId,textFullRepoName,textWatchersTextView,
+        TextView textRepoName, textrepoFullNameView,textFullRepoName,textWatchersTextView,
         textCommitsCount;
         ImageView logoImg;
 
@@ -114,10 +115,10 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             textRepoName =(TextView)itemView.findViewById(R.id.repoName);
             textFullRepoName =(TextView)itemView.findViewById(R.id.fullRepoName);
             logoImg =(ImageView)itemView.findViewById(R.id.ownerImageView);
-            textRepoId = (TextView)itemView.findViewById(R.id.repoIdTextView);
+         //   textrepoFullNameView = (TextView)itemView.findViewById(R.id.repoFullNameView);
             textWatchersTextView = (TextView)itemView.findViewById(R.id.watchersTextView);
             textCommitsCount =(TextView)itemView.findViewById(R.id.commitTextView);
-            textRepoId.setVisibility(View.GONE);
+          //  textrepoFullNameView.setVisibility(View.GONE);
 
             itemView.setOnClickListener(this);
 
@@ -127,6 +128,12 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         @Override
         public void onClick(View view) {
            //Implement method for further details
+
+            String fullName = textFullRepoName.getText().toString();
+
+            Intent intent = new Intent(context, RepoDetailsActivity.class);
+            intent.putExtra("fullName", fullName);
+            context.startActivity(intent);
 
         }
     }

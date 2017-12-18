@@ -1,6 +1,8 @@
 package com.abhisek.mapprr_github;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,7 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity  implements ConnectivityReceiver.ConnectivityReceiverListener, SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity  implements ConnectivityReceiver.ConnectivityReceiverListener,
+        SearchView.OnQueryTextListener,MyResultReceiver.Receiver {
 
 
     private static final String TAG =MainActivity.class.getSimpleName() ;
@@ -39,12 +42,14 @@ public class MainActivity extends AppCompatActivity  implements ConnectivityRece
     ProgressDialog progress;
     String followers_url;
     String full_name, watchers,name, id, avatar_url, fullNameApi;
-    List<RepositoryData> repositoryDataList = new ArrayList<>();;
-    List<String> watchersCount = new ArrayList<>();;
+    public static List<RepositoryData> repositoryDataList = new ArrayList<>();
+    List<String> watchersCount = new ArrayList<>();
     List<String> fullNames = new ArrayList<>();
     List<String> commits = new ArrayList<>();
     int count ,i,j =0;
     String searchString;
+    public static final String KEY_NAME = "fullName" ;
+    public MyResultReceiver mReceiver;
 
 
 
@@ -61,8 +66,25 @@ public class MainActivity extends AppCompatActivity  implements ConnectivityRece
         getSupportActionBar().setTitle(R.string.app_name);
         repoDisplay = (RecyclerView) findViewById(R.id.notiList);
         repoDisplay.setLayoutManager(layoutManager);
+        mReceiver = new MyResultReceiver(new Handler());
+        mReceiver.setReceiver((MyResultReceiver.Receiver) this);
         new RetrieveFeedTask().execute();
 
+
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        // TODO Auto-generated method stub
+        repositoryDataList = (List<RepositoryData>) resultData.getSerializable("repoList");
+
+       // Log.i(TAG, "received result from Service="+resultData.getSerializable("repoList"));
+
+        mAdapter = new RepositoriesAdapter(mContext,repositoryDataList);
+        repoDisplay.setLayoutManager(layoutManager);
+        repoDisplay.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+        progress.dismiss();
 
     }
 
@@ -195,10 +217,16 @@ public class MainActivity extends AppCompatActivity  implements ConnectivityRece
                         repositoryData.fullRepoName = full_name;
                         repositoryData.logo = avatar_url;
                         repositoryData.setRepoId(id);
-                         repositoryDataList.add(repositoryData);
+                        repositoryDataList.add(repositoryData);
                     }
-                        new FollowersTask().execute();
-                  //  new CommitsTask().execute();
+                    for (String name : fullNames) {
+
+                        Intent intent = new Intent(MainActivity.this, DownloadIntentService.class);
+                        intent.putExtra(KEY_NAME, name);
+                        intent.putExtra("receiverTag", mReceiver);
+                        startService(intent);
+
+                    }
 
                 }
                 catch (JSONException e) {
@@ -277,20 +305,7 @@ public class MainActivity extends AppCompatActivity  implements ConnectivityRece
                 response = "THERE WAS AN ERROR";
             }
             else {
-              //  count++;
 
-                Log.i("response2", response);
-/*
-                try {
-                *//*    JSONObject jsonObject = new JSONObject(response);
-                   String watchers = jsonObject.getString("watchers");
-                    Log.i(TAG, watchers);
-                  // Log.i(TAG, String.valueOf(count));
-                    watchersCount.add(watchers);*//*
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
 
 
             }
