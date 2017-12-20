@@ -7,6 +7,7 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,16 +31,23 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContributorDetails extends AppCompatActivity {
+import static com.abhisek.mapprr_github.MainActivity.KEY_NAME;
+import static com.abhisek.mapprr_github.MainActivity.repositoryDataList;
 
+public class ContributorDetails extends AppCompatActivity implements MyResultReceiver.Receiver {
+
+    private static final String TAG = ContributorDetails.class.getSimpleName() ;
     ImageView ownerImageView;
     ProgressDialog progress;
     String contributorName, contributorLogo;
     public static List<RepositoryData> contributorDataList = new ArrayList<>();
-    String full_name, watchers,name, id, avatar_url, fullNameApi;
+    String full_name,name, id, avatar_url;
     private RecyclerView repoDisplay;
-    private RepositoriesAdapter mAdapter;
+    private RepositoriesAdapter mContributorAdapter;
     LinearLayoutManager layoutManager ;
+    List<String> fullNames = new ArrayList<>();
+    public MyResultReceiver mReceiver;
+    public static final String KEY_NAME = "fullName" ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,21 +56,23 @@ public class ContributorDetails extends AppCompatActivity {
 
         contributorName = getIntent().getStringExtra("fullName");
         contributorLogo = getIntent().getStringExtra("logo");
-
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
         repoDisplay = (RecyclerView) findViewById(R.id.contributorRepoList);
         repoDisplay.setLayoutManager(layoutManager);
-
         ownerImageView =(ImageView)findViewById(R.id.ownerImage);
+        mReceiver = new MyResultReceiver(new Handler());
+        mReceiver.setReceiver((MyResultReceiver.Receiver) this);
 
+        //set up toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle(contributorName);
 
+
+        //load image of contributor
         Picasso.with(ContributorDetails.this)
                 .load(contributorLogo)
                 .resize(260, 260)
@@ -70,10 +80,13 @@ public class ContributorDetails extends AppCompatActivity {
                 .transform(new CircleTransform())
                 .into(ownerImageView);
 
+        //asynctask to get list of repos
         new RetrieveFeedTask().execute();
 
     }
 
+
+    //creates a circular bitmap profile image
     public class CircleTransform implements Transformation {
         @Override
         public Bitmap transform(Bitmap source) {
@@ -115,12 +128,11 @@ public class ContributorDetails extends AppCompatActivity {
         if (i== android.R.id.home){
             this.finish();
         }
-
         return false;
     }
-    public void showProgressBar() {
 
-       // Log.i(TAG, "showProgressBar");
+    //progressbar
+    public void showProgressBar() {
         progress = new ProgressDialog(this);
         progress.setMessage("Loading..Please Wait..");
         progress.setCancelable(true);
@@ -133,13 +145,11 @@ public class ContributorDetails extends AppCompatActivity {
 
 
         protected void onPreExecute() {
-
             showProgressBar();
 
         }
 
         protected String doInBackground(Void... urls) {
-
 
             try {
 
@@ -175,17 +185,25 @@ public class ContributorDetails extends AppCompatActivity {
             }
             else {
 
-                //  Log.i(TAG, response);
                 try {
+                    int length=0;
                     JSONArray jsonArray = new JSONArray(response);
-                    contributorDataList.clear();
-                    for(int i=0;i<10;i++) {
-                        RepositoryData repositoryData = new RepositoryData();
 
+                    if(jsonArray.length()>=10) {
+                        length =10;
+                    }
+                    else {
+
+                        length =jsonArray.length();
+                    }
+                    contributorDataList.clear();
+                    for(int i=0;i<length;i++) {
+                        RepositoryData repositoryData = new RepositoryData();
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         id  = jsonObject.getString("id");
                         name  = jsonObject.getString("name");
                         full_name =jsonObject.getString("full_name");
+                        fullNames.add(full_name);
                         JSONObject owner = jsonObject.getJSONObject("owner");
                         avatar_url = owner.getString("avatar_url");
                         repositoryData.repoName = name;
@@ -195,29 +213,30 @@ public class ContributorDetails extends AppCompatActivity {
                         contributorDataList.add(repositoryData);
                     }
 
-                    mAdapter = new RepositoriesAdapter(ContributorDetails.this,contributorDataList);
-                    repoDisplay.setLayoutManager(layoutManager);
-                    repoDisplay.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();
-                    progress.dismiss();
-              /*      for (String name : fullNames) {
-
+                    for (String name : fullNames) {
                         Intent intent = new Intent(ContributorDetails.this, DownloadIntentService.class);
                         intent.putExtra(KEY_NAME, name);
+                        intent.putExtra("ActivityTag", "ContributorDetails");
                         intent.putExtra("receiverTag", mReceiver);
                         startService(intent);
-
-                    }*/
-
+                    }
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
 
-
-
-
         }
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        contributorDataList = (List<RepositoryData>) resultData.getSerializable("repoList");
+        mContributorAdapter = new RepositoriesAdapter(this,contributorDataList);
+        repoDisplay.setLayoutManager(layoutManager);
+        repoDisplay.setAdapter(mContributorAdapter);
+        mContributorAdapter.notifyDataSetChanged();
+        progress.dismiss();
+
     }
 }

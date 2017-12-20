@@ -9,9 +9,7 @@ import android.content.Context;
  */
 
 public class MyApplication extends Application {
-
     private static MyApplication mInstance;
-
 
     @Override
     public void onCreate() {
@@ -23,7 +21,7 @@ public class MyApplication extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-       // MultiDex.install(this);
+
     }
 
 

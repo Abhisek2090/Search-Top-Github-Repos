@@ -14,7 +14,6 @@ public class ConnectivityReceiver
         extends BroadcastReceiver {
 
     public static ConnectivityReceiverListener connectivityReceiverListener;
-
     public ConnectivityReceiver() {
         super();
     }

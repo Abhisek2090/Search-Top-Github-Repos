@@ -52,23 +52,16 @@ public class RepoDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repo_details);
-
-
-
         fullName = getIntent().getStringExtra("fullName");
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle(fullName);
-
-
         textUrl = (TextView)findViewById(R.id.linkTextView);
         textDescription = (TextView)findViewById(R.id.descriptionTextView);
         profileImgParent = (LinearLayout)findViewById(R.id.profileImagell);
         ownerImageView =(ImageView)findViewById(R.id.ownerImage);
-
 
         new RetrieveFeedTask().execute();
         new ContributorsTask().execute();
@@ -78,7 +71,6 @@ public class RepoDetailsActivity extends AppCompatActivity {
     }
     public void showProgressBar() {
 
-        Log.i(TAG, "showProgressBar");
         progress = new ProgressDialog(this);
         progress.setMessage("Loading..Please Wait..");
         progress.setCancelable(true);
@@ -93,16 +85,13 @@ public class RepoDetailsActivity extends AppCompatActivity {
         protected void onPreExecute() {
 
             showProgressBar();
-
         }
 
         protected String doInBackground(Void... urls) {
 
-
             try {
 
                 URL url = new URL("https://api.github.com/repos/"+fullName);
-
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestProperty("Authorization", "token af4fa32d5869d0cd57179926af02481ac650a4bb");
 
@@ -133,16 +122,12 @@ public class RepoDetailsActivity extends AppCompatActivity {
             }
             else {
 
-                  Log.i(TAG, response);
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     JSONObject owner = jsonObject.getJSONObject("owner");
                     ownerImage = owner.getString("avatar_url");
-
-
                     url = jsonObject.getString("html_url");
                     description = jsonObject.getString("description");
-
                     textUrl.setText(url);
                     textDescription.setText(description);
 
@@ -158,10 +143,6 @@ public class RepoDetailsActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-
-
-
-
         }
     }
 
@@ -169,8 +150,6 @@ public class RepoDetailsActivity extends AppCompatActivity {
 
 
         protected void onPreExecute() {
-
-            // showProgressBar();
 
         }
 
@@ -212,7 +191,6 @@ public class RepoDetailsActivity extends AppCompatActivity {
             }
             else {
 
-                Log.i(TAG, response);
                 try {
                     JSONArray jsonArray = new JSONArray(response);
                     for(int i=0;i<jsonArray.length();i++) {
@@ -220,10 +198,8 @@ public class RepoDetailsActivity extends AppCompatActivity {
                         final String contributorImageUrl = jsonObject.getString("avatar_url");
                         final String contributorName = jsonObject.getString("login");
                         images.add(contributorImageUrl);
-
                         LayoutInflater inflater = LayoutInflater.from(RepoDetailsActivity.this);
                         final View inflatedLayout = inflater.inflate(R.layout.addprofilepic, null, false);
-
                         profileImgParent.addView(inflatedLayout);
                         ImageView contributorImage = (ImageView)inflatedLayout.findViewById(R.id.contributorImageView);
 
@@ -255,10 +231,6 @@ public class RepoDetailsActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-
-
-
-
         }
     }
 

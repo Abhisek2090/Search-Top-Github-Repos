@@ -29,6 +29,7 @@ public class DownloadIntentService extends IntentService {
     List<String> watchersCount = new ArrayList<>();
     List<String> commitsCount = new ArrayList<>();
     int count=0;
+    String tag;
 
 
     public DownloadIntentService() {
@@ -37,20 +38,19 @@ public class DownloadIntentService extends IntentService {
     }
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-
-       // String fullName = intent.getStringExtra(MainActivity.KEY_NAME);
         ResultReceiver rec = intent.getParcelableExtra("receiverTag");
-       String fullName = intent.getStringExtra(MainActivity.KEY_NAME);
-        watchersCount(fullName);
-        commitsCount(fullName);
-        Log.i(TAG+"watchersCount", String.valueOf(watchersCount.size()));
+        tag = intent.getStringExtra("ActivityTag");
 
-        for(int j=0;j<watchersCount.size();j++) {
-            count++;
-            MainActivity.repositoryDataList.get(j).repowatchers = watchersCount.get(j);
-            MainActivity.repositoryDataList.get(j).commitsCount = commitsCount.get(j);
+        if(tag.equalsIgnoreCase("MainActivity")) {
+            String fullName = intent.getStringExtra(MainActivity.KEY_NAME);
+            watchersCount(fullName);
+            commitsCount(fullName);
 
-        }
+            for(int j=0;j<watchersCount.size();j++) {
+                count++;
+                MainActivity.repositoryDataList.get(j).repowatchers = watchersCount.get(j);
+                MainActivity.repositoryDataList.get(j).commitsCount = commitsCount.get(j);
+            }
             if(watchersCount.size() ==10) {
                 if (rec != null) {
                     Bundle b = new Bundle();
@@ -60,6 +60,30 @@ public class DownloadIntentService extends IntentService {
                 }
             }
 
+        }
+
+        else if(tag.equalsIgnoreCase("ContributorDetails")) {
+            String fullName = intent.getStringExtra(ContributorDetails.KEY_NAME);
+            watchersCount(fullName);
+            commitsCount(fullName);
+
+            for(int j=0;j<watchersCount.size();j++) {
+                count++;
+                ContributorDetails.contributorDataList.get(j).repowatchers = watchersCount.get(j);
+                ContributorDetails.contributorDataList.get(j).commitsCount = commitsCount.get(j);
+
+            }
+            if(watchersCount.size() ==10) {
+                if (rec != null) {
+                    Bundle b = new Bundle();
+                    b.putSerializable("repoList", (Serializable) ContributorDetails.contributorDataList);
+                    rec.send(0, b);
+
+                }
+            }
+
+        }
+
     }
 
     private void watchersCount(String fullName) {
@@ -68,9 +92,6 @@ public class DownloadIntentService extends IntentService {
         try {
 
             URL url = new URL("https://api.github.com/repos/"+fullName);
-
-           // Log.i(TAG, String.valueOf(url));
-
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestProperty("Authorization", "token af4fa32d5869d0cd57179926af02481ac650a4bb");
 
@@ -84,8 +105,6 @@ public class DownloadIntentService extends IntentService {
                 bufferedReader.close();
                 JSONObject jsonObject = new JSONObject(stringBuilder.toString());
                 String watchers = jsonObject.getString("watchers");
-                Log.i(TAG, watchers);
-                // Log.i(TAG, String.valueOf(count));
                 watchersCount.add(watchers);
 
 
@@ -105,9 +124,6 @@ public class DownloadIntentService extends IntentService {
         try {
 
             URL url = new URL("https://api.github.com/repos/"+fullName+"/contributors");
-
-           // Log.i(TAG, String.valueOf(url));
-
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestProperty("Authorization", "token af4fa32d5869d0cd57179926af02481ac650a4bb");
 
@@ -131,13 +147,12 @@ public class DownloadIntentService extends IntentService {
                     total = total + jsonObject.getInt("contributions");
 
                 }
-                Log.i(TAG, String.valueOf(total));
+
                 commitsCount.add(String.valueOf(total));
             }
             else  {
-                    Log.i(TAG, "noValue");
-                }
 
+                }
 
             } finally {
                 urlConnection.disconnect();

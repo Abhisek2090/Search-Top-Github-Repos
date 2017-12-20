@@ -66,7 +66,6 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         final MyHolder myHolder= (MyHolder) holder;
         RepositoryData current = filterList.get(position);
         myHolder.textRepoName.setText(current.repoName);
-//        myHolder.textrepoFullNameView.setText(current.repoId);
         myHolder.textFullRepoName.setText(current.fullRepoName);
         myHolder.textWatchersTextView.setText(current.repowatchers);
         myHolder.textCommitsCount.setText(current.commitsCount);
@@ -74,9 +73,7 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         // load image into imageview using glide
 
       DownloadBitmap task = new DownloadBitmap();
-     String bitmap= String.valueOf(task.execute(current.logo));
-
-
+       String bitmap= String.valueOf(task.execute(current.logo));
 
         Glide.with(context).load(current.logo)
                 .asBitmap()
@@ -115,10 +112,9 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             textRepoName =(TextView)itemView.findViewById(R.id.repoName);
             textFullRepoName =(TextView)itemView.findViewById(R.id.fullRepoName);
             logoImg =(ImageView)itemView.findViewById(R.id.ownerImageView);
-         //   textrepoFullNameView = (TextView)itemView.findViewById(R.id.repoFullNameView);
             textWatchersTextView = (TextView)itemView.findViewById(R.id.watchersTextView);
             textCommitsCount =(TextView)itemView.findViewById(R.id.commitTextView);
-          //  textrepoFullNameView.setVisibility(View.GONE);
+
 
             itemView.setOnClickListener(this);
 
@@ -128,9 +124,7 @@ public class RepositoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         @Override
         public void onClick(View view) {
            //Implement method for further details
-
             String fullName = textFullRepoName.getText().toString();
-
             Intent intent = new Intent(context, RepoDetailsActivity.class);
             intent.putExtra("fullName", fullName);
             context.startActivity(intent);
