@@ -49,6 +49,11 @@ public class DownloadIntentService extends IntentService {
             for(int j=0;j<watchersCount.size();j++) {
                 count++;
                 MainActivity.repositoryDataList.get(j).repowatchers = watchersCount.get(j);
+              //  MainActivity.repositoryDataList.get(j).commitsCount = commitsCount.get(j);
+            }
+
+            for(int j=0;j<commitsCount.size();j++) {
+
                 MainActivity.repositoryDataList.get(j).commitsCount = commitsCount.get(j);
             }
             if(watchersCount.size() ==10) {
@@ -70,8 +75,12 @@ public class DownloadIntentService extends IntentService {
             for(int j=0;j<watchersCount.size();j++) {
                 count++;
                 ContributorDetails.contributorDataList.get(j).repowatchers = watchersCount.get(j);
-                ContributorDetails.contributorDataList.get(j).commitsCount = commitsCount.get(j);
 
+            }
+
+            for(int j=0;j<commitsCount.size();j++) {
+
+                ContributorDetails.contributorDataList.get(j).commitsCount = commitsCount.get(j);
             }
             if(watchersCount.size() ==10) {
                 if (rec != null) {
