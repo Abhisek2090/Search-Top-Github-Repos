@@ -1,4 +1,4 @@
-package com.abhisek.mapprr_github;
+package com.abhisek.github.adapters;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -14,6 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.abhisek.github.R;
+import com.abhisek.github.activites.RepoDetailsActivity;
+import com.abhisek.github.model.RepositoryData;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.abhisek.mapprr_github;
+package com.abhisek.github.activites;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -17,6 +17,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.abhisek.github.R;
+import com.abhisek.github.model.RepositoryData;
+import com.abhisek.github.adapters.RepositoriesAdapter;
+import com.abhisek.github.services.DownloadIntentService;
+import com.abhisek.github.services.MyResultReceiver;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -30,9 +35,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.abhisek.mapprr_github.MainActivity.KEY_NAME;
-import static com.abhisek.mapprr_github.MainActivity.repositoryDataList;
 
 public class ContributorDetails extends AppCompatActivity implements MyResultReceiver.Receiver {
 

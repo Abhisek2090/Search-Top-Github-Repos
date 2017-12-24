@@ -1,12 +1,13 @@
-package com.abhisek.mapprr_github;
+package com.abhisek.github.services;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.os.ResultReceiver;
 import android.support.annotation.Nullable;
-import android.util.Log;
+
+import com.abhisek.github.activites.ContributorDetails;
+import com.abhisek.github.activites.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

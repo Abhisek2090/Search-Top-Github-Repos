@@ -1,4 +1,4 @@
-package com.abhisek.mapprr_github;
+package com.abhisek.github;
 
 import org.junit.Test;
 

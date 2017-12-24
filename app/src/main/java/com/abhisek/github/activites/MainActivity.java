@@ -1,4 +1,4 @@
-package com.abhisek.mapprr_github;
+package com.abhisek.github.activites;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -20,9 +20,17 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
+
+import com.abhisek.github.MyApplication;
+import com.abhisek.github.services.MyResultReceiver;
+import com.abhisek.github.R;
+import com.abhisek.github.model.RepositoryData;
+import com.abhisek.github.adapters.RepositoriesAdapter;
+import com.abhisek.github.services.ConnectivityReceiver;
+import com.abhisek.github.services.DownloadIntentService;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

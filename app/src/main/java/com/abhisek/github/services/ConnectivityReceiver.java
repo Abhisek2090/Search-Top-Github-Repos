@@ -1,10 +1,12 @@
-package com.abhisek.mapprr_github;
+package com.abhisek.github.services;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+
+import com.abhisek.github.MyApplication;
 
 /**
  * Created by bapu on 3/23/2017.

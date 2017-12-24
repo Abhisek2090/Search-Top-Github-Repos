@@ -1,4 +1,4 @@
-package com.abhisek.mapprr_github;
+package com.abhisek.github;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

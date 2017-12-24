@@ -1,4 +1,4 @@
-package com.abhisek.mapprr_github;
+package com.abhisek.github.model;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.abhisek.mapprr_github;
+package com.abhisek.github.services;
 
 import android.os.Bundle;
 import android.os.Handler;

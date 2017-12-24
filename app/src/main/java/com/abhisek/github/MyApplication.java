@@ -1,7 +1,9 @@
-package com.abhisek.mapprr_github;
+package com.abhisek.github;
 
 import android.app.Application;
 import android.content.Context;
+
+import com.abhisek.github.services.ConnectivityReceiver;
 
 
 /**
